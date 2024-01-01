@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { MulterError } from 'multer';
 import { ERROR_CODES } from '../contracts/api';
 import { HttpError } from '../errors/httpError';
 
@@ -14,15 +15,36 @@ export const errorHandler = (
     return;
   }
 
-  // Multer signals an oversized upload with its own error code.
+  // Multer reports upload problems with its own codes. An oversized file is a
+  // 413; anything else (a second file, an unexpected field name) is the
+  // client's mistake, not a server fault.
+  if (error instanceof MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      res
+        .status(413)
+        .json({ message: 'Poster image is too large', code: ERROR_CODES.PAYLOAD_TOO_LARGE });
+    } else {
+      res.status(400).json({ message: error.message, code: ERROR_CODES.VALIDATION_FAILED });
+    }
+    return;
+  }
+
+  // body-parser tags its failures (malformed JSON, oversized body) with a 4xx
+  // `status` and an `expose` flag; without this they surfaced as a 500.
+  const parserError = error as { status?: unknown; expose?: unknown };
   if (
-    typeof error === 'object' &&
-    error !== null &&
-    (error as { code?: string }).code === 'LIMIT_FILE_SIZE'
+    typeof parserError === 'object' &&
+    parserError !== null &&
+    parserError.expose === true &&
+    typeof parserError.status === 'number' &&
+    parserError.status >= 400 &&
+    parserError.status < 500
   ) {
-    res
-      .status(413)
-      .json({ message: 'Poster image is too large', code: ERROR_CODES.PAYLOAD_TOO_LARGE });
+    const tooLarge = parserError.status === 413;
+    res.status(parserError.status).json({
+      message: tooLarge ? 'Request body is too large' : 'Request body could not be parsed',
+      code: tooLarge ? ERROR_CODES.PAYLOAD_TOO_LARGE : ERROR_CODES.VALIDATION_FAILED,
+    });
     return;
   }
 

@@ -139,6 +139,17 @@ describe('POST /movies', () => {
     expect(response.body.code).toBe('PAYLOAD_TOO_LARGE');
     expect(mocked.createMovie).not.toHaveBeenCalled();
   });
+
+  it('answers 400, not 500, when the poster arrives under the wrong field name', async () => {
+    const response = await request(app)
+      .post('/movies')
+      .field('title', 'Arrival')
+      .attach('poster', Buffer.from('x'), { filename: 'a.jpg', contentType: 'image/jpeg' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.code).toBe('VALIDATION_FAILED');
+    expect(mocked.createMovie).not.toHaveBeenCalled();
+  });
 });
 
 describe('GET /movies/:id', () => {

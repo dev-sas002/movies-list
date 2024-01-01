@@ -150,6 +150,31 @@ describe('user routes', () => {
   });
 });
 
+describe('malformed request bodies', () => {
+  it('answers 400 with the documented shape for broken JSON', async () => {
+    const response = await request(app)
+      .post('/login')
+      .set('Content-Type', 'application/json')
+      .send('{"email": "test@example.com",');
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      message: 'Request body could not be parsed',
+      code: 'VALIDATION_FAILED',
+    });
+  });
+
+  it('answers 413 for a JSON body over the 1 MB limit', async () => {
+    const response = await request(app)
+      .post('/login')
+      .set('Content-Type', 'application/json')
+      .send(JSON.stringify({ email: 'a'.repeat(1_100_000), password: 'x' }));
+
+    expect(response.status).toBe(413);
+    expect(response.body.code).toBe('PAYLOAD_TOO_LARGE');
+  });
+});
+
 describe('unknown routes', () => {
   it('answers with the documented error shape', async () => {
     const response = await request(app).get('/nope');
