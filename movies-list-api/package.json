@@ -19,7 +19,7 @@
     "format:check": "prettier --check \"src/**/*.ts\""
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "keywords": [],
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",

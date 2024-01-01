@@ -13,7 +13,7 @@ const requireEnv = (name: string): string => {
   if (!value) {
     throw new Error(
       `Missing required environment variable: ${name}. ` +
-        'Copy .env_sample to .env and fill it in.'
+        'Copy .env.example to .env and fill it in.'
     );
   }
 

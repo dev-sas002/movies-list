@@ -5,7 +5,7 @@ dist
 coverage
 .env
 .env.*
-!.env_sample
+!.env.example
 src/__tests__
 jest.config.js
 Dockerfile
