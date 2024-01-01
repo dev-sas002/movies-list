@@ -5,9 +5,9 @@ type Variant = "primary" | "secondary";
 
 const BUTTON_VARIANTS: Record<Variant, string> = {
   primary:
-    "text-white font-bold bg-primary hover:opacity-70 rounded-lg text-sm px-5 py-2.5 text-center",
+    "bg-primary text-ink hover:bg-primaryHover disabled:cursor-not-allowed disabled:opacity-60",
   secondary:
-    "font-bold text-white text-sm px-5 py-2.5 text-center border rounded-lg",
+    "border border-paper/30 text-paper hover:border-primary hover:text-primary",
 };
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -22,7 +22,12 @@ export const Button = ({
   return (
     <button
       type="button"
-      className={classnames(BUTTON_VARIANTS[variant], className)}
+      className={classnames(
+        "rounded-lg px-5 py-2.5 text-center text-sm font-semibold transition",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-backgroundColor",
+        BUTTON_VARIANTS[variant],
+        className
+      )}
       {...props}
     />
   );

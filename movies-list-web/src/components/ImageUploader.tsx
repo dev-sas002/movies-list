@@ -34,8 +34,8 @@ export const ImageUploader = ({ image, onFileUpload, onImageRemove }: Props): JS
     <Dropzone accept={ACCEPTED} maxFiles={1} onDrop={onDrop}>
       {({ getRootProps, getInputProps, isDragActive }) => (
         <section
-          className={`flex aspect-[2/3] w-full max-w-sm flex-col items-center justify-center rounded-xl border border-dashed bg-inputColor text-white transition ${
-            isDragActive ? "border-primary bg-primary/10" : "border-white/40"
+          className={`flex aspect-[2/3] w-full max-w-sm flex-col items-center justify-center rounded-xl border border-dashed bg-inputColor text-paper transition ${
+            isDragActive ? "border-primary bg-primary/10" : "border-paper/30"
           }`}
         >
           {hasPreview ? (
@@ -47,8 +47,8 @@ export const ImageUploader = ({ image, onFileUpload, onImageRemove }: Props): JS
             >
               <input {...getInputProps()} aria-label="Poster image" />
               <DropIcon />
-              <p className="text-sm">Drop an image here</p>
-              <p className="text-xs text-white/50">JPEG, PNG, WebP or GIF · up to 5 MB</p>
+              <p className="text-sm font-medium">Drop a poster here, or click to choose one</p>
+              <p className="text-xs text-paper/50">JPEG, PNG, WebP or GIF · up to 5 MB</p>
             </div>
           )}
         </section>

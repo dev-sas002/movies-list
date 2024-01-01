@@ -2,16 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: "Montserrat", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
-  background: #093545 url("./assets/background.png") no-repeat bottom;
-  background-size: 100%;
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply min-h-screen bg-backgroundColor font-sans text-paper antialiased;
+    /* A faint wash of projector light from the top of the screen. */
+    background-image: radial-gradient(
+      ellipse 80% 50% at 50% -10%,
+      rgb(233 162 59 / 0.09),
+      transparent 70%
+    );
+    background-repeat: no-repeat;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+
+  ::selection {
+    @apply bg-primary text-ink;
+  }
 }
 
-.main-container {
-  @apply m-32;
+@layer components {
+  .main-container {
+    @apply mx-auto w-full max-w-7xl px-4 py-10 sm:px-8 sm:py-14 lg:px-12;
+  }
 }

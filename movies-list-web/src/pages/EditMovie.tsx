@@ -66,8 +66,8 @@ export const EditMovie = (): JSX.Element => {
 
   return (
     <main className="main-container">
-      <h1 className="mb-10 text-4xl font-semibold text-white sm:text-5xl">Edit movie</h1>
-      {isLoading && <p className="text-white/70">Loading…</p>}
+      <h1 className="mb-10 text-4xl font-semibold text-paper sm:text-5xl">Edit movie</h1>
+      {isLoading && <p className="text-paper/70">Loading…</p>}
       {error && (
         <p className="text-error" role="alert">
           {error}

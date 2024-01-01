@@ -18,7 +18,7 @@ export const MovieCard = ({
   onDeleteClick,
 }: Props): JSX.Element => {
   return (
-    <div className="group relative rounded-xl bg-cardColor p-2 transition duration-200 hover:bg-cardColorHover hover:-translate-y-1">
+    <article className="group relative rounded-xl bg-cardColor p-2 ring-1 ring-paper/5 transition duration-200 hover:-translate-y-1 hover:bg-cardColorHover motion-reduce:transition-none motion-reduce:hover:translate-y-0">
       <button
         type="button"
         onClick={onEditClick}
@@ -34,20 +34,20 @@ export const MovieCard = ({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center text-sm text-white/50">
+            <div className="flex h-full w-full items-center justify-center text-sm text-paper/50">
               No poster
             </div>
           )}
         </div>
         <div className="px-1 pb-1 pt-4">
-          <h3 className="text-lg font-medium text-white">{title}</h3>
-          <p className="mt-1 text-sm text-white/70">{year}</p>
+          <h3 className="text-xl font-semibold leading-snug text-paper">{title}</h3>
+          <p className="mt-1 text-sm tabular-nums text-paper/70">{year}</p>
           {tags.length > 0 && (
             <ul className="mt-3 flex flex-wrap gap-1.5">
               {tags.slice(0, 3).map((tag) => (
                 <li
                   key={tag}
-                  className="rounded-full bg-white/10 px-2 py-0.5 text-xs tracking-wide text-white/80"
+                  className="rounded-full bg-paper/10 px-2 py-0.5 text-xs tracking-wide text-paper/80"
                 >
                   {tag}
                 </li>
@@ -61,11 +61,11 @@ export const MovieCard = ({
           type="button"
           aria-label={`Delete ${title}`}
           onClick={onDeleteClick}
-          className="absolute right-4 top-4 rounded-full bg-black/60 p-2 text-white opacity-0 transition group-hover:opacity-100 focus:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-error hover:bg-error"
+          className="absolute right-4 top-4 rounded-full bg-ink/75 p-2 text-paper transition hover:bg-error hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-error sm:opacity-0 sm:focus:opacity-100 sm:group-hover:opacity-100"
         >
           <DeleteIcon className="h-3.5 w-3.5" />
         </button>
       )}
-    </div>
+    </article>
   );
 };

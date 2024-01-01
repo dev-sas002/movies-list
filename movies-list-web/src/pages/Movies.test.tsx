@@ -167,7 +167,7 @@ describe("Movies page", () => {
     renderMovies();
     await screen.findByText("Arrival");
 
-    await userEvent.click(screen.getByRole("button", { name: /Logout/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Log out/ }));
 
     await waitFor(() => expect(localStorage.getItem("userToken")).toBeNull());
     expect(mockNavigate).toHaveBeenCalledWith("/signin");

@@ -41,8 +41,8 @@ const renderForm = (props: Parameters<typeof MovieForm>[0] = {}) =>
   );
 
 const fillAndSubmit = async (title: string, year: string, buttonName: RegExp) => {
-  await userEvent.type(screen.getByPlaceholderText("Title"), title);
-  await userEvent.type(screen.getByPlaceholderText("Publishing year"), year);
+  await userEvent.type(screen.getByLabelText("Title"), title);
+  await userEvent.type(screen.getByLabelText("Publishing year"), year);
   await userEvent.click(screen.getByRole("button", { name: buttonName }));
 };
 
@@ -61,7 +61,7 @@ describe("MovieForm - create", () => {
     localStorage.setItem("userToken", "tok");
     renderForm();
 
-    await userEvent.click(screen.getByRole("button", { name: /Submit/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Add movie/ }));
 
     await screen.findByLabelText("Please enter movie title");
     expect(mockedCreate).not.toHaveBeenCalled();
@@ -71,7 +71,7 @@ describe("MovieForm - create", () => {
     localStorage.setItem("userToken", "tok");
     renderForm();
 
-    await fillAndSubmit("Arrival", "1200", /Submit/);
+    await fillAndSubmit("Arrival", "1200", /Add movie/);
 
     await screen.findByLabelText("The first film was made in 1878");
     expect(mockedCreate).not.toHaveBeenCalled();
@@ -82,14 +82,14 @@ describe("MovieForm - create", () => {
     mockedCreate.mockResolvedValue(movie());
     renderForm();
 
-    await userEvent.type(screen.getByPlaceholderText("Title"), "Arrival");
-    await userEvent.type(screen.getByPlaceholderText("Publishing year"), "2016");
+    await userEvent.type(screen.getByLabelText("Title"), "Arrival");
+    await userEvent.type(screen.getByLabelText("Publishing year"), "2016");
     await userEvent.type(
-      screen.getByPlaceholderText("Tags (comma separated)"),
+      screen.getByLabelText("Tags"),
       "sci-fi, drama"
     );
-    await userEvent.type(screen.getByPlaceholderText("Synopsis"), "Heptapods arrive.");
-    await userEvent.click(screen.getByRole("button", { name: /Submit/ }));
+    await userEvent.type(screen.getByLabelText("Synopsis"), "Heptapods arrive.");
+    await userEvent.click(screen.getByRole("button", { name: /Add movie/ }));
 
     await waitFor(() => expect(mockedCreate).toHaveBeenCalledTimes(1));
 
@@ -106,7 +106,7 @@ describe("MovieForm - create", () => {
   it("bounces to sign-in when the token is gone", async () => {
     renderForm();
 
-    await fillAndSubmit("Arrival", "2016", /Submit/);
+    await fillAndSubmit("Arrival", "2016", /Add movie/);
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/signin"));
     expect(mockedCreate).not.toHaveBeenCalled();
@@ -117,7 +117,7 @@ describe("MovieForm - create", () => {
     mockedCreate.mockRejectedValue(new Error("A poster image is required"));
     renderForm();
 
-    await fillAndSubmit("Arrival", "2016", /Submit/);
+    await fillAndSubmit("Arrival", "2016", /Add movie/);
 
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent("A poster image is required")
@@ -132,15 +132,15 @@ describe("MovieForm - edit", () => {
   it("pre-fills every field from the existing movie", () => {
     renderForm({ isEditState: true, initialData });
 
-    expect(screen.getByPlaceholderText("Title")).toHaveValue("Arrival");
-    expect(screen.getByPlaceholderText("Publishing year")).toHaveValue("2016");
-    expect(screen.getByPlaceholderText("Tags (comma separated)")).toHaveValue(
+    expect(screen.getByLabelText("Title")).toHaveValue("Arrival");
+    expect(screen.getByLabelText("Publishing year")).toHaveValue("2016");
+    expect(screen.getByLabelText("Tags")).toHaveValue(
       "sci-fi, drama"
     );
-    expect(screen.getByPlaceholderText("Synopsis")).toHaveValue(
+    expect(screen.getByLabelText("Synopsis")).toHaveValue(
       "Linguist meets heptapods."
     );
-    expect(screen.getByRole("button", { name: "Update" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
   });
 
   it("previews the poster already stored for the movie", async () => {
@@ -159,9 +159,9 @@ describe("MovieForm - edit", () => {
     mockedUpdate.mockResolvedValue(movie());
     renderForm({ isEditState: true, initialData });
 
-    await userEvent.clear(screen.getByPlaceholderText("Title"));
-    await userEvent.type(screen.getByPlaceholderText("Title"), "Arrival (2016)");
-    await userEvent.click(screen.getByRole("button", { name: "Update" }));
+    await userEvent.clear(screen.getByLabelText("Title"));
+    await userEvent.type(screen.getByLabelText("Title"), "Arrival (2016)");
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
     await waitFor(() => expect(mockedUpdate).toHaveBeenCalledTimes(1));
 
@@ -177,7 +177,7 @@ describe("MovieForm - edit", () => {
     mockedUpdate.mockResolvedValue(movie());
     renderForm({ isEditState: true, initialData });
 
-    await userEvent.click(screen.getByRole("button", { name: "Update" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
     await waitFor(() => expect(mockedUpdate).toHaveBeenCalledTimes(1));
     // Sending an empty image field would wipe the stored poster.
@@ -189,7 +189,7 @@ describe("MovieForm - edit", () => {
     mockedUpdate.mockRejectedValue(new Error("Movie not found or unauthorized to update"));
     renderForm({ isEditState: true, initialData });
 
-    await userEvent.click(screen.getByRole("button", { name: "Update" }));
+    await userEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
     await waitFor(() =>
       expect(screen.getByRole("alert")).toHaveTextContent(

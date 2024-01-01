@@ -47,7 +47,7 @@ export const ImageDisplay = ({ removeFile, image }: ImageProps): JSX.Element | n
           event.stopPropagation();
           removeFile();
         }}
-        className="absolute right-2 top-2 rounded-full bg-white p-1.5 text-gray-600 transition hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-error"
+        className="absolute right-2 top-2 rounded-full bg-paper p-1.5 text-ink/70 transition hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-error"
       >
         <DeleteIcon className="h-3 w-3" />
       </button>

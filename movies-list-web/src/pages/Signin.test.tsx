@@ -25,7 +25,7 @@ const renderSignin = () =>
 const fillAndSubmit = async (email: string, password: string) => {
   await userEvent.type(screen.getByLabelText("Email"), email);
   await userEvent.type(screen.getByLabelText("Password"), password);
-  await userEvent.click(screen.getByRole("button", { name: /Login/ }));
+  await userEvent.click(screen.getByRole("button", { name: /Log in/ }));
 };
 
 beforeEach(() => {
@@ -36,7 +36,7 @@ describe("Signin page", () => {
   it("blocks submission until the form validates", async () => {
     renderSignin();
 
-    await userEvent.click(screen.getByRole("button", { name: /Login/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Log in/ }));
 
     await screen.findByLabelText("Please enter your email");
     expect(mockedLogin).not.toHaveBeenCalled();
@@ -86,7 +86,7 @@ describe("Signin page", () => {
     await screen.findByRole("alert");
 
     mockedLogin.mockResolvedValueOnce("tok-123");
-    await userEvent.click(screen.getByRole("button", { name: /Login/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Log in/ }));
 
     await waitFor(() => expect(screen.queryByRole("alert")).not.toBeInTheDocument());
   });

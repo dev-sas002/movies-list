@@ -26,7 +26,7 @@ const RouteFallback = (): JSX.Element => (
     <span className="sr-only">Loading</span>
     <div
       aria-hidden="true"
-      className="h-10 w-10 animate-spin rounded-full border-2 border-white/20 border-t-primary"
+      className="h-10 w-10 animate-spin rounded-full border-2 border-paper/20 border-t-primary"
     />
   </div>
 );

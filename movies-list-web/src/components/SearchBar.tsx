@@ -47,7 +47,7 @@ export const SearchBar = ({
             onChange={(event) => setDraft(event.target.value)}
             aria-label="Search your movies"
             placeholder="Try: 90s sci-fi with a female lead"
-            className="w-full rounded-lg bg-inputColor px-4 py-3 text-sm text-white placeholder:text-white/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="w-full rounded-lg bg-inputColor px-4 py-3 text-sm text-paper placeholder:text-paper/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           />
         </div>
         <label className="sr-only" htmlFor="sort">
@@ -57,7 +57,7 @@ export const SearchBar = ({
           id="sort"
           value={sort}
           onChange={(event) => onSortChange(event.target.value as MovieSort)}
-          className="rounded-lg bg-inputColor px-4 py-3 text-sm text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="rounded-lg bg-inputColor px-4 py-3 text-sm text-paper focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           {MOVIE_SORTS.map((option) => (
             <option key={option} value={option}>
@@ -67,19 +67,19 @@ export const SearchBar = ({
         </select>
         <button
           type="submit"
-          className="rounded-lg bg-primary px-6 py-3 text-sm font-bold text-white transition hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+          className="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-ink transition hover:bg-primaryHover focus:outline-none focus-visible:ring-2 focus-visible:ring-paper"
         >
           Search
         </button>
       </form>
 
       {interpretation && (
-        <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-white/70">
+        <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-paper/70">
           <span
             className={
               interpretation.source === "ai"
-                ? "rounded-full bg-primary/20 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-primary"
-                : "rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-white/70"
+                ? "rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-primary"
+                : "rounded-full bg-paper/10 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-paper/70"
             }
           >
             {interpretation.source === "ai" ? "AI search" : "Rule-based"}

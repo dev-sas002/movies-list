@@ -107,8 +107,8 @@ export const Movies = (): JSX.Element => {
   if (isEmptyCollection) {
     return (
       <main className="main-container flex min-h-[80vh] flex-col items-center justify-center text-center">
-        <h1 className="mb-3 text-4xl font-semibold text-white">Your movie list is empty</h1>
-        <p className="mb-8 max-w-md text-white/70">
+        <h1 className="mb-3 text-4xl font-semibold text-paper sm:text-5xl">Your movie list is empty</h1>
+        <p className="mb-8 max-w-md text-paper/70">
           Add your first film and it will show up here with its poster, year and tags.
         </p>
         <Button onClick={() => navigate(ROUTES.newMovie)}>Add a new movie</Button>
@@ -120,22 +120,22 @@ export const Movies = (): JSX.Element => {
     <main className="main-container">
       <header className="mb-10 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <h1 className="text-4xl font-semibold text-white sm:text-5xl">My Movies</h1>
+          <h1 className="text-4xl font-semibold text-paper sm:text-5xl">My Movies</h1>
           <button
             type="button"
             aria-label="Add a new movie"
             onClick={() => navigate(ROUTES.newMovie)}
-            className="rounded-full p-2 transition hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="rounded-full p-1.5 text-primary transition hover:bg-paper/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
-            <PlusIcon />
+            <PlusIcon aria-hidden="true" className="h-8 w-8" />
           </button>
         </div>
         <button
           type="button"
-          className="flex items-center gap-2 text-white transition hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1"
+          className="flex items-center gap-2 text-paper transition hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1"
           onClick={handleLogout}
         >
-          Logout <LogoutIcon />
+          Log out <LogoutIcon aria-hidden="true" className="h-6 w-6" />
         </button>
       </header>
 
@@ -180,9 +180,9 @@ export const Movies = (): JSX.Element => {
       )}
 
       {!isLoading && !error && data.movies.length === 0 && isSearching && (
-        <div className="rounded-xl border border-white/10 bg-cardColor/60 px-6 py-12 text-center">
-          <p className="text-lg text-white">Nothing matched “{query}”.</p>
-          <p className="mt-2 text-white/60">Try a broader search, or clear it to see everything.</p>
+        <div className="rounded-xl border border-paper/10 bg-cardColor/60 px-6 py-12 text-center">
+          <p className="text-lg text-paper">Nothing matched “{query}”.</p>
+          <p className="mt-2 text-paper/60">Try a broader search, or clear it to see everything.</p>
           <Button className="mt-6" variant="secondary" onClick={() => handleSearch("")}>
             Clear search
           </Button>

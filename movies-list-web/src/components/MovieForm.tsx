@@ -95,22 +95,22 @@ export const MovieForm = ({ isEditState, initialData }: Props): JSX.Element => {
             onImageRemove={() => setPoster(undefined)}
           />
           <div className="flex max-w-xl flex-col gap-5">
-            <Input name="title" label="Title" placeholder="Title" />
+            <Input name="title" label="Title" placeholder="e.g. Arrival" />
             <Input
               name="year"
               label="Publishing year"
-              placeholder="Publishing year"
+              placeholder="e.g. 2016"
               inputMode="numeric"
             />
             <Input
               name="tags"
               label="Tags"
-              placeholder="Tags (comma separated)"
+              placeholder="Comma separated, e.g. sci-fi, first contact"
             />
             <Input
               name="synopsis"
               label="Synopsis"
-              placeholder="Synopsis"
+              placeholder="A sentence or two you would recognise it by"
               multiline
               rows={5}
             />
@@ -119,12 +119,12 @@ export const MovieForm = ({ isEditState, initialData }: Props): JSX.Element => {
                 {error}
               </div>
             )}
-            <div className="mt-4 flex gap-3">
+            <div className="mt-4 flex flex-wrap gap-3">
               <Button variant="secondary" onClick={() => navigate(ROUTES.movies)}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isEditState ? "Update" : "Submit"}
+                {isEditState ? "Save changes" : "Add movie"}
               </Button>
             </div>
           </div>

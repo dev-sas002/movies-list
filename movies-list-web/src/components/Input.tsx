@@ -23,18 +23,21 @@ export const Input = ({
   const [field, meta, { setValue }] = useField(name);
   const generatedId = useId();
   const id = props.id ?? `${name}-${generatedId}`;
+  const errorId = `${id}-error`;
+  const isInvalid = meta.touched && !!meta.error;
 
   const controlClass = classnames(
-    "block w-full rounded-lg bg-inputColor p-2.5 text-sm text-white placeholder:text-white/50",
+    "block w-full rounded-lg border bg-inputColor px-3 py-2.5 text-sm text-paper placeholder:text-paper/50",
     "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-    className,
-    { "border border-error": meta.touched && !!meta.error }
+    isInvalid ? "border-error" : "border-paper/10",
+    className
   );
+  const describedBy = isInvalid ? { "aria-invalid": true, "aria-describedby": errorId } : {};
 
   return (
     <div className="w-full">
       {label && (
-        <label htmlFor={id} className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-white/60">
+        <label htmlFor={id} className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-paper/70">
           {label}
         </label>
       )}
@@ -44,6 +47,7 @@ export const Input = ({
           rows={rows}
           className={classnames(controlClass, "resize-y")}
           {...(props as HTMLProps<HTMLTextAreaElement>)}
+          {...describedBy}
           {...field}
           onChange={(e) => setValue(e.target.value)}
         />
@@ -53,13 +57,14 @@ export const Input = ({
           type={type}
           className={controlClass}
           {...props}
+          {...describedBy}
           {...field}
           onChange={(e) => setValue(e.target.value)}
         />
       )}
       <ErrorMessage name={name}>
         {(msg) => (
-          <div className="mt-1 text-sm text-error" role="alert" aria-label={msg}>
+          <div id={errorId} className="mt-1.5 text-sm text-error" role="alert" aria-label={msg}>
             {msg}
           </div>
         )}
