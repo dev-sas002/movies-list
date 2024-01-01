@@ -38,9 +38,7 @@ describe("Signin page", () => {
 
     await userEvent.click(screen.getByRole("button", { name: /Login/ }));
 
-    await waitFor(() =>
-      expect(screen.getByLabelText("Please enter your email")).toBeInTheDocument()
-    );
+    await screen.findByLabelText("Please enter your email");
     expect(mockedLogin).not.toHaveBeenCalled();
   });
 
@@ -49,11 +47,7 @@ describe("Signin page", () => {
 
     await fillAndSubmit("test@example.com", "short");
 
-    await waitFor(() =>
-      expect(
-        screen.getByLabelText("Password must be at least 8 characters")
-      ).toBeInTheDocument()
-    );
+    await screen.findByLabelText("Password must be at least 8 characters");
     expect(mockedLogin).not.toHaveBeenCalled();
   });
 
@@ -89,7 +83,7 @@ describe("Signin page", () => {
     renderSignin();
 
     await fillAndSubmit("test@example.com", "password123");
-    await waitFor(() => expect(screen.getByRole("alert")).toBeInTheDocument());
+    await screen.findByRole("alert");
 
     mockedLogin.mockResolvedValueOnce("tok-123");
     await userEvent.click(screen.getByRole("button", { name: /Login/ }));

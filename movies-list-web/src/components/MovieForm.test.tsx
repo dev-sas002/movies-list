@@ -63,9 +63,7 @@ describe("MovieForm - create", () => {
 
     await userEvent.click(screen.getByRole("button", { name: /Submit/ }));
 
-    await waitFor(() =>
-      expect(screen.getByLabelText("Please enter movie title")).toBeInTheDocument()
-    );
+    await screen.findByLabelText("Please enter movie title");
     expect(mockedCreate).not.toHaveBeenCalled();
   });
 
@@ -75,9 +73,7 @@ describe("MovieForm - create", () => {
 
     await fillAndSubmit("Arrival", "1200", /Submit/);
 
-    await waitFor(() =>
-      expect(screen.getByLabelText("The first film was made in 1878")).toBeInTheDocument()
-    );
+    await screen.findByLabelText("The first film was made in 1878");
     expect(mockedCreate).not.toHaveBeenCalled();
   });
 

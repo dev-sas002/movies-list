@@ -98,7 +98,7 @@ describe("EditMovie page", () => {
   it("sends an unauthenticated visitor to sign-in", async () => {
     renderAt();
 
-    await waitFor(() => expect(screen.getByText("sign in")).toBeInTheDocument());
+    await screen.findByText("sign in");
     expect(mockedGetMovie).not.toHaveBeenCalled();
   });
 });

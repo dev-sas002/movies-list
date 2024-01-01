@@ -88,13 +88,11 @@ describe("Movies page", () => {
 
     renderMovies();
 
-    // The skeleton grid stands in for the movies while the page is in flight.
-    expect(document.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
+    // The skeleton grid is decorative; assistive tech hears the status line.
+    expect(screen.getByRole("status")).toHaveTextContent("Loading your movies");
 
     resolve(page([]));
-    await waitFor(() =>
-      expect(screen.getByText("Your movie list is empty")).toBeInTheDocument()
-    );
+    await screen.findByText("Your movie list is empty");
   });
 
   it("distinguishes a failed request from an empty list", async () => {
@@ -132,7 +130,7 @@ describe("Movies page", () => {
 
     renderMovies();
 
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
     expect(screen.getByText("Dune")).toBeInTheDocument();
 
     // The poster is loaded from the signed URL, not inlined in the JSON.
@@ -152,7 +150,7 @@ describe("Movies page", () => {
     mockedGetMovies.mockResolvedValue(page([movie()]));
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     await userEvent.click(screen.getByRole("button", { name: "Edit Arrival" }));
 
@@ -167,7 +165,7 @@ describe("Movies page", () => {
     mockedLogout.mockRejectedValue(new Error("server down"));
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     await userEvent.click(screen.getByRole("button", { name: /Logout/ }));
 
@@ -185,7 +183,7 @@ describe("Movies page - search", () => {
     mockedGetMovies.mockResolvedValue(page([movie()], { page: 3, totalPages: 5, hasMore: true }));
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     await userEvent.type(
       screen.getByLabelText("Search your movies"),
@@ -216,11 +214,7 @@ describe("Movies page - search", () => {
 
     renderMovies();
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("sci-fi released between 1990 and 1999")
-      ).toBeInTheDocument()
-    );
+    await screen.findByText("sci-fi released between 1990 and 1999");
     expect(screen.getByText("AI search")).toBeInTheDocument();
   });
 
@@ -239,22 +233,20 @@ describe("Movies page - search", () => {
 
     renderMovies();
 
-    await waitFor(() => expect(screen.getByText("Rule-based")).toBeInTheDocument());
+    await screen.findByText("Rule-based");
   });
 
   it("offers to clear the search instead of claiming the collection is empty", async () => {
     mockedGetMovies.mockResolvedValueOnce(page([movie()]));
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     mockedGetMovies.mockResolvedValue(page([]));
     await userEvent.type(screen.getByLabelText("Search your movies"), "zzzz");
     await userEvent.click(screen.getByRole("button", { name: "Search" }));
 
-    await waitFor(() =>
-      expect(screen.getByText(/Nothing matched/)).toBeInTheDocument()
-    );
+    await screen.findByText(/Nothing matched/);
     // The "empty collection" screen would be a lie here - there is one movie.
     expect(screen.queryByText("Your movie list is empty")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Clear search" })).toBeInTheDocument();
@@ -264,7 +256,7 @@ describe("Movies page - search", () => {
     mockedGetMovies.mockResolvedValue(page([movie()]));
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     await userEvent.selectOptions(screen.getByLabelText("Sort order"), "title");
 
@@ -286,7 +278,7 @@ describe("Movies page - pagination", () => {
     mockedGetMovies.mockResolvedValue(page([movie()]));
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     expect(screen.queryByRole("navigation", { name: "Pagination" })).not.toBeInTheDocument();
   });
@@ -297,7 +289,7 @@ describe("Movies page - pagination", () => {
     );
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     const nav = screen.getByRole("navigation", { name: "Pagination" });
     expect(within(nav).getByRole("button", { name: "Previous" })).toBeDisabled();
@@ -319,7 +311,7 @@ describe("Movies page - pagination", () => {
     );
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     const nav = screen.getByRole("navigation", { name: "Pagination" });
     expect(within(nav).getByRole("button", { name: "Next" })).toBeDisabled();
@@ -337,7 +329,7 @@ describe("Movies page - delete", () => {
     jest.spyOn(window, "confirm").mockReturnValue(true);
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     await userEvent.click(screen.getByRole("button", { name: "Delete Arrival" }));
 
@@ -350,7 +342,7 @@ describe("Movies page - delete", () => {
     jest.spyOn(window, "confirm").mockReturnValue(false);
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     await userEvent.click(screen.getByRole("button", { name: "Delete Arrival" }));
 
@@ -363,7 +355,7 @@ describe("Movies page - delete", () => {
     jest.spyOn(window, "confirm").mockReturnValue(true);
 
     renderMovies();
-    await waitFor(() => expect(screen.getByText("Arrival")).toBeInTheDocument());
+    await screen.findByText("Arrival");
 
     await userEvent.click(screen.getByRole("button", { name: "Delete Arrival" }));
 

@@ -27,7 +27,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --max-warnings=0 \"src/**/*.{ts,tsx}\""
   },
   "eslintConfig": {
     "extends": [
