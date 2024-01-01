@@ -53,7 +53,10 @@ Welcome to the *Movie Management System*, a revolutionary project designed to el
 Access the system, sign in, and immerse yourself in the world of seamless movie collection management.
 
 ## Images
+<img width="524" alt="Screenshot 2023-12-29 at 7 38 51 PM" src="https://github.com/de-ahsan/movies-list/assets/92055912/d3948206-cd5a-4132-a11a-2bb6f818b72e">
+<img width="1591" alt="Screenshot 2023-12-29 at 7 39 09 PM" src="https://github.com/de-ahsan/movies-list/assets/92055912/758d5e46-1b56-43b7-9754-865b68bfd5ec">
 
+<img width="1591" alt="Screenshot 2023-12-29 at 7 39 56 PM" src="https://github.com/de-ahsan/movies-list/assets/92055912/354c6efa-a01e-400a-86ba-8138ef8c1060">
 
 ## Technologies Used
 
