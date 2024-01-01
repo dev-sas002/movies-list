@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 
 import { Movies } from "./Movies";
 import { Movie, MovieListResponse, Pagination } from "contracts/api";
-import { deleteMovie, getMovies, logout } from "../services/api";
+import { ApiRequestError, deleteMovie, getMovies, logout } from "../services/api";
 
 jest.mock("../services/api", () => ({
   ...jest.requireActual("../services/api"),
@@ -109,6 +109,19 @@ describe("Movies page", () => {
       )
     );
     expect(screen.queryByText("Your movie list is empty")).not.toBeInTheDocument();
+  });
+
+  it("drops an expired session and returns to sign-in instead of offering a retry", async () => {
+    localStorage.setItem("userToken", "expired");
+    mockedGetMovies.mockRejectedValue(
+      new ApiRequestError("Unauthorized - Invalid token", 401, "UNAUTHORIZED")
+    );
+
+    renderMovies();
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/signin"));
+    expect(localStorage.getItem("userToken")).toBeNull();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
   it("renders the fetched movies with their posters and tags", async () => {

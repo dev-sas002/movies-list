@@ -3,7 +3,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 
 import { EditMovie } from "./EditMovie";
 import { Movie } from "contracts/api";
-import { getMovie } from "services/api";
+import { ApiRequestError, getMovie } from "services/api";
 
 jest.mock("services/api", () => ({
   ...jest.requireActual("services/api"),
@@ -81,6 +81,18 @@ describe("EditMovie page", () => {
       )
     );
     expect(screen.queryByTestId("movie-form")).not.toBeInTheDocument();
+  });
+
+  it("sends a visitor whose token has expired back to sign-in", async () => {
+    localStorage.setItem("userToken", "expired");
+    mockedGetMovie.mockRejectedValue(
+      new ApiRequestError("Unauthorized - Invalid token", 401, "UNAUTHORIZED")
+    );
+
+    renderAt();
+
+    expect(await screen.findByText("sign in")).toBeInTheDocument();
+    expect(localStorage.getItem("userToken")).toBeNull();
   });
 
   it("sends an unauthenticated visitor to sign-in", async () => {

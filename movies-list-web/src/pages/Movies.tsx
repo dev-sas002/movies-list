@@ -8,7 +8,7 @@ import { SearchBar } from "components/SearchBar";
 import { ReactComponent as PlusIcon } from "assets/plus-icon.svg";
 import { ReactComponent as LogoutIcon } from "assets/logout-icon.svg";
 import { ROUTES, editMoviePath } from "constants/routes";
-import { deleteMovie, getMovies, logout, posterSrc } from "services/api";
+import { deleteMovie, getMovies, isSessionExpired, logout, posterSrc } from "services/api";
 import { clearToken, getToken } from "services/session";
 
 const PAGE_SIZE = 8;
@@ -28,6 +28,11 @@ export const Movies = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const endSession = useCallback(() => {
+    clearToken();
+    navigate(ROUTES.signin);
+  }, [navigate]);
+
   const load = useCallback(async () => {
     const userToken = getToken();
 
@@ -42,11 +47,15 @@ export const Movies = (): JSX.Element => {
     try {
       setData(await getMovies({ page, pageSize: PAGE_SIZE, q: query || undefined, sort }, userToken));
     } catch (err) {
+      if (isSessionExpired(err)) {
+        endSession();
+        return;
+      }
       setError("We could not load your movies. Please try again.");
     } finally {
       setIsLoading(false);
     }
-  }, [navigate, page, query, sort]);
+  }, [endSession, navigate, page, query, sort]);
 
   useEffect(() => {
     load();
@@ -72,6 +81,10 @@ export const Movies = (): JSX.Element => {
       await deleteMovie(movie.id, getToken());
       await load();
     } catch (err) {
+      if (isSessionExpired(err)) {
+        endSession();
+        return;
+      }
       setError("We could not delete that movie. Please try again.");
     }
   };

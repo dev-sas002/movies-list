@@ -3,8 +3,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Movie } from "contracts/api";
 import { MovieForm } from "components/MovieForm";
 import { ROUTES } from "constants/routes";
-import { getMovie } from "services/api";
-import { getToken } from "services/session";
+import { getMovie, isSessionExpired } from "services/api";
+import { clearToken, getToken } from "services/session";
 
 export const EditMovie = (): JSX.Element => {
   const location = useLocation();
@@ -41,9 +41,15 @@ export const EditMovie = (): JSX.Element => {
           setMovie(fetched);
         }
       } catch (err) {
-        if (isActive) {
-          setError("We could not load this movie.");
+        if (!isActive) {
+          return;
         }
+        if (isSessionExpired(err)) {
+          clearToken();
+          navigate(ROUTES.signin);
+          return;
+        }
+        setError("We could not load this movie.");
       } finally {
         if (isActive) {
           setIsLoading(false);

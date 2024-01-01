@@ -31,6 +31,14 @@ export class ApiRequestError extends Error {
   }
 }
 
+/**
+ * Tokens last an hour and a second sign-in elsewhere revokes this one, so any
+ * authenticated call can come back 401. Callers use this to send the user back
+ * to sign-in rather than showing a retry button that can never succeed.
+ */
+export const isSessionExpired = (error: unknown): boolean =>
+  error instanceof ApiRequestError && error.status === 401;
+
 const authHeaders = (token: string | null): Record<string, string> =>
   token ? { Authorization: `Bearer ${token}` } : {};
 

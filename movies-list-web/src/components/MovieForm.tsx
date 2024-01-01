@@ -7,8 +7,8 @@ import { ImageUploader } from "components/ImageUploader";
 import { Input } from "components/Input";
 import { ROUTES } from "constants/routes";
 import { movieSchema } from "schemas/movieSchema";
-import { createMovie, posterSrc, updateMovie } from "services/api";
-import { getToken } from "services/session";
+import { createMovie, isSessionExpired, posterSrc, updateMovie } from "services/api";
+import { clearToken, getToken } from "services/session";
 import { Image } from "types/Image";
 
 interface Props {
@@ -65,6 +65,11 @@ export const MovieForm = ({ isEditState, initialData }: Props): JSX.Element => {
 
       navigate(ROUTES.movies);
     } catch (err) {
+      if (isSessionExpired(err)) {
+        clearToken();
+        navigate(ROUTES.signin);
+        return;
+      }
       // Show what the API actually said - "Publishing year must be a year
       // between 1878 and 2999" is more useful than a canned failure message.
       setError(err instanceof Error ? err.message : "Something went wrong");
