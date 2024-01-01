@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Button } from "components/Button";
-import { Checkbox } from "components/Checkbox";
 import { Input } from "components/Input";
 import { ROUTES } from "constants/routes";
 import { Form, Formik } from "formik";
 import { signinSchema } from "schemas/signinSchema";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/api";
+import { login } from "services/api";
+import { setToken } from "services/session";
 
 export const Signin = (): JSX.Element => {
   const navigate = useNavigate();
@@ -17,13 +17,10 @@ export const Signin = (): JSX.Element => {
     setError(null);
 
     try {
-      const userToken = await login(values);
-
-      localStorage.setItem('userToken', userToken);
-
+      setToken(await login(values));
       navigate(ROUTES.movies);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to sign in');
+      setError(err instanceof Error ? err.message : "Unable to sign in");
     }
   };
 
@@ -37,11 +34,15 @@ export const Signin = (): JSX.Element => {
         {({ isSubmitting }) => (
           <Form className="flex flex-col gap-4 items-center justify-center h-[100vh] md:w-1/5">
             <h1 className="mb-6 text-6xl text-white">Sign in</h1>
-            <Input name="email" type="email" placeholder="Email" />
-            <Input name="password" type="password" placeholder="Password" />
-            <Checkbox name="remember" label="Remember me" />
+            <Input name="email" type="email" label="Email" autoComplete="email" />
+            <Input
+              name="password"
+              type="password"
+              label="Password"
+              autoComplete="current-password"
+            />
             {error && (
-              <div className="text-red-500" role="alert">
+              <div className="text-error" role="alert">
                 {error}
               </div>
             )}

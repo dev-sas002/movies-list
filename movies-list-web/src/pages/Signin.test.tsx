@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 
 import { Signin } from "./Signin";
-import { login } from "../services/api";
+import { login } from "services/api";
 
-jest.mock("../services/api");
+jest.mock("services/api");
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
@@ -23,8 +23,8 @@ const renderSignin = () =>
   );
 
 const fillAndSubmit = async (email: string, password: string) => {
-  await userEvent.type(screen.getByPlaceholderText("Email"), email);
-  await userEvent.type(screen.getByPlaceholderText("Password"), password);
+  await userEvent.type(screen.getByLabelText("Email"), email);
+  await userEvent.type(screen.getByLabelText("Password"), password);
   await userEvent.click(screen.getByRole("button", { name: /Login/ }));
 };
 

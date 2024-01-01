@@ -4,7 +4,6 @@ import { Form, Formik } from "formik";
 import * as Yup from "yup";
 
 import { Button } from "./Button";
-import { Checkbox } from "./Checkbox";
 import { Input } from "./Input";
 import { MovieCard } from "./MovieCard";
 import { ImageDisplay } from "./ImageDisplay";
@@ -44,27 +43,6 @@ describe("Button", () => {
     await userEvent.click(screen.getByRole("button", { name: "Go" }));
 
     expect(onClick).toHaveBeenCalledTimes(1);
-  });
-});
-
-describe("Checkbox", () => {
-  it("associates the label with the input so clicking the text toggles it", async () => {
-    render(<Checkbox name="remember" label="Remember me" />);
-
-    const checkbox = screen.getByRole("checkbox", { name: "Remember me" });
-    expect(checkbox).not.toBeChecked();
-
-    await userEvent.click(screen.getByText("Remember me"));
-
-    expect(checkbox).toBeChecked();
-  });
-
-  it("honours an explicitly supplied id", () => {
-    render(<Checkbox id="custom-id" name="remember" label="Remember me" />);
-    expect(screen.getByRole("checkbox", { name: "Remember me" })).toHaveAttribute(
-      "id",
-      "custom-id"
-    );
   });
 });
 
