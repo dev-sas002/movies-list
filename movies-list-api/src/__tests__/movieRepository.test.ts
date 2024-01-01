@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Movie from '../models/movie';
 import * as movieRepository from '../repositories/movieRepository';
 
@@ -140,5 +141,30 @@ describe('schema indexes', () => {
 
   it('declares a weighted text index for free-text search', () => {
     expect(indexes).toContainEqual({ title: 'text', synopsis: 'text', tags: 'text' });
+  });
+});
+
+describe('findPoster', () => {
+  const mockFindById = (doc: unknown) => {
+    const exec = jest.fn().mockResolvedValue(doc);
+    const lean = jest.fn().mockReturnValue({ exec });
+    const select = jest.fn().mockReturnValue({ lean });
+    jest.spyOn(Movie, 'findById').mockReturnValue({ select } as never);
+  };
+
+  it('turns the BSON Binary that lean() returns into a Buffer with every byte', async () => {
+    const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"/>');
+    mockFindById({ image: new mongoose.mongo.Binary(svg), imageType: 'image/svg+xml' });
+
+    const movie = await movieRepository.findPoster('m1');
+
+    expect(Buffer.isBuffer(movie?.image)).toBe(true);
+    expect(movie?.image?.equals(svg)).toBe(true);
+  });
+
+  it('returns null for a missing movie', async () => {
+    mockFindById(null);
+
+    await expect(movieRepository.findPoster('m1')).resolves.toBeNull();
   });
 });

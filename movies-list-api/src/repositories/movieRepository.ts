@@ -84,12 +84,26 @@ export const findById = (userId: string, movieId: string): Promise<IMovie | null
     .lean<IMovie>()
     .exec() as Promise<IMovie | null>;
 
+/**
+ * `.lean()` hands Buffer fields back as the driver's BSON `Binary`, not as a
+ * Node `Buffer`, and `Buffer.from(binary)` silently yields zero bytes - which
+ * is how every poster was once served as an empty 200. Exported for testing.
+ */
+export const toBuffer = (value: unknown): Buffer | undefined => {
+  if (Buffer.isBuffer(value)) return value;
+  if (value instanceof mongoose.mongo.Binary) return Buffer.from(value.buffer);
+  return undefined;
+};
+
 /** Loads the poster bytes only. Used by the poster route and nothing else. */
-export const findPoster = (movieId: string): Promise<IMovie | null> =>
-  Movie.findById(movieId)
+export const findPoster = async (movieId: string): Promise<IMovie | null> => {
+  const movie = await Movie.findById(movieId)
     .select('image imageType imageHash userId')
     .lean<IMovie>()
-    .exec() as Promise<IMovie | null>;
+    .exec();
+
+  return movie ? ({ ...movie, image: toBuffer(movie.image) } as IMovie) : null;
+};
 
 export const create = async (data: Partial<IMovie>): Promise<IMovie> => {
   const movie = new Movie(data);

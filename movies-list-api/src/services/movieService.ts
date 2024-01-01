@@ -323,7 +323,7 @@ export const getPoster = async (request: PosterRequest): Promise<PosterResponse>
   }
 
   return {
-    body: Buffer.from(movie.image),
+    body: movie.image,
     contentType: movie.imageType || 'application/octet-stream',
     etag: `"${posterVersion(movie.imageHash)}"`,
     versioned,
