@@ -351,6 +351,7 @@ describe('getPoster', () => {
 
     expect(result.contentType).toBe('image/svg+xml');
     expect(result.etag).toBe(`"${HASH.slice(0, 16)}"`);
+    expect(result.versioned).toBe(true);
   });
 
   it('serves the bytes to the authenticated owner without a signature', async () => {
@@ -358,7 +359,7 @@ describe('getPoster', () => {
 
     await expect(
       movieService.getPoster({ movieId: MOVIE_ID, authenticatedUserId: USER_ID })
-    ).resolves.toMatchObject({ contentType: 'image/svg+xml' });
+    ).resolves.toMatchObject({ contentType: 'image/svg+xml', versioned: false });
   });
 
   it('refuses a forged signature', async () => {

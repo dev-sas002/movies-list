@@ -278,6 +278,11 @@ export interface PosterResponse {
   body: Buffer;
   contentType: string;
   etag: string;
+  /**
+   * True when the request named the poster's current content version, so the
+   * URL can never point at different bytes and may be cached immutably.
+   */
+  versioned: boolean;
 }
 
 export interface PosterRequest {
@@ -308,8 +313,9 @@ export const getPoster = async (request: PosterRequest): Promise<PosterResponse>
 
   const ownerId = String(movie.userId);
   const isOwner = request.authenticatedUserId === ownerId;
+  const versioned = request.version === posterVersion(movie.imageHash);
   const isSigned =
-    request.version === posterVersion(movie.imageHash) &&
+    versioned &&
     verifyPosterSignature(ownerId, request.movieId, movie.imageHash, request.signature);
 
   if (!isOwner && !isSigned) {
@@ -320,5 +326,6 @@ export const getPoster = async (request: PosterRequest): Promise<PosterResponse>
     body: Buffer.from(movie.image),
     contentType: movie.imageType || 'application/octet-stream',
     etag: `"${posterVersion(movie.imageHash)}"`,
+    versioned,
   };
 };

@@ -179,6 +179,7 @@ describe('GET /movies/:id', () => {
       body: Buffer.from('<svg/>'),
       contentType: 'image/svg+xml',
       etag: '"abc"',
+      versioned: true,
     });
 
     await request(app).get('/movies/m1/poster');
@@ -235,6 +236,7 @@ describe('GET /movies/:id/poster', () => {
       body: Buffer.from('poster-bytes'),
       contentType: 'image/jpeg',
       etag: '"abc123"',
+      versioned: true,
     });
 
     const response = await request(app).get('/movies/m1/poster?v=abc123&sig=deadbeef');
@@ -252,11 +254,27 @@ describe('GET /movies/:id/poster', () => {
     });
   });
 
+  it('makes an unversioned poster URL revalidate instead of caching it for a year', async () => {
+    mocked.getPoster.mockResolvedValue({
+      body: Buffer.from('poster-bytes'),
+      contentType: 'image/jpeg',
+      etag: '"abc123"',
+      versioned: false,
+    });
+
+    const response = await request(app).get('/movies/m1/poster');
+
+    expect(response.status).toBe(200);
+    expect(response.headers['cache-control']).toBe('private, no-cache');
+    expect(response.headers.etag).toBe('"abc123"');
+  });
+
   it('answers 304 when the client already has the image', async () => {
     mocked.getPoster.mockResolvedValue({
       body: Buffer.from('poster-bytes'),
       contentType: 'image/jpeg',
       etag: '"abc123"',
+      versioned: true,
     });
 
     const response = await request(app)

@@ -74,8 +74,12 @@ movieRouter.get(
 
     res.set({
       'Content-Type': result.contentType,
-      // The URL carries the content hash, so a cached copy can never be stale.
-      'Cache-Control': 'private, max-age=31536000, immutable',
+      // A versioned URL changes whenever the poster does, so it can be cached
+      // forever. A bare `/movies/:id/poster` fetched with a bearer token keeps
+      // its URL across replacements and must be revalidated against the ETag.
+      'Cache-Control': result.versioned
+        ? 'private, max-age=31536000, immutable'
+        : 'private, no-cache',
       ETag: result.etag,
       // Defence in depth for image formats that can carry script (SVG).
       'X-Content-Type-Options': 'nosniff',
