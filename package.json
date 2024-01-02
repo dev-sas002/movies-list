@@ -1,0 +1,18 @@
+{
+  "name": "movies-list",
+  "private": true,
+  "description": "A JWT-authenticated movie collection: Express + TypeScript + MongoDB API and a Create React App + Tailwind client.",
+  "scripts": {
+    "start": "concurrently -n web,api -c cyan,magenta \"npm --prefix movies-list-web start\" \"npm --prefix movies-list-api run dev\"",
+    "build": "npm --prefix movies-list-api run build && npm --prefix movies-list-web run build",
+    "test": "npm --prefix movies-list-api test && npm --prefix movies-list-web test -- --watchAll=false",
+    "typecheck": "npm --prefix movies-list-api run typecheck && npm --prefix movies-list-web run typecheck",
+    "lint": "npm --prefix movies-list-api run lint",
+    "format:check": "npm --prefix movies-list-api run format:check",
+    "contract:sync": "node scripts/sync-contracts.js",
+    "db:seed": "npm --prefix movies-list-api run db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
