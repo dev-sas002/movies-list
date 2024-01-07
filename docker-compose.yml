@@ -1,0 +1,77 @@
+# One command brings up MongoDB, seeds a demo collection, and starts the API
+# and the web client:
+#
+#   JWT_SECRET=$(openssl rand -base64 48) docker compose up --build
+#
+# Then open http://localhost:8290 and sign in as test@example.com / password123.
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  # Runs once, populates the demo account and its movies (with generated
+  # poster art), then exits. The API waits for it to finish.
+  seed:
+    build:
+      context: ./movies-list-api
+    restart: "no"
+    command: ["node", "dist/db/seed.js"]
+    environment:
+      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_DB: ${MONGODB_DB:-movie-list}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET, e.g. JWT_SECRET=$(openssl rand -base64 48) docker compose up}
+      SEED_EMAIL: ${SEED_EMAIL:-test@example.com}
+      SEED_PASSWORD: ${SEED_PASSWORD:-password123}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  api:
+    build:
+      context: ./movies-list-api
+    restart: unless-stopped
+    ports:
+      - "8291:3001"
+    environment:
+      PORT: "3001"
+      MONGODB_URI: mongodb://mongo:27017
+      MONGODB_DB: ${MONGODB_DB:-movie-list}
+      # No default: a missing secret must stop the API, not weaken it.
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET, e.g. JWT_SECRET=$(openssl rand -base64 48) docker compose up}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8290}
+      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-5242880}
+      LIST_CACHE_TTL_MS: ${LIST_CACHE_TTL_MS:-30000}
+      # Optional. Unset means the rule-based search planner is used.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-opus-5}
+    depends_on:
+      mongo:
+        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ./movies-list-web
+      args:
+        # Baked into the bundle: this is the URL the browser calls, so it is
+        # the published host port, not the compose service name.
+        REACT_APP_SERVER_URL: ${PUBLIC_API_URL:-http://localhost:8291}
+    restart: unless-stopped
+    ports:
+      - "8290:8080"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  mongo-data:
